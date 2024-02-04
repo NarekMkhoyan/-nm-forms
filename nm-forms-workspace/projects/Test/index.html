@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <form data-nmFormGroup="user">
+      <div class="control">
+        <label for="name">Name</label>
+        <input type="text" name="name" id="name" data-nmFormControl="username" />
+      </div>
+      <div class="control">
+        <label for="email">Email</label>
+        <input type="email" name="email" id="email" data-nmFormControl="email" />
+      </div>
+      <div class="control">
+        <label for="age">Age</label>
+        <input type="number" name="age" value="18" id="age" min="18" data-nmFormControl="age" />
+      </div>
+      <div class="control">
+        <label for="agree">Agreement</label>
+        <input type="checkbox" name="agree" id="agree" min="18" data-nmFormControl="agree" />
+      </div>
+    </form>
+    <div class="control">
+      <label for="address">Address</label>
+      <input type="text" data-nmFormControl="address" />
+    </div>
+
+    <button id="test_btn">Print</button>
+    <script src="./script.js" type="module"></script>
+  </body>
+</html>
