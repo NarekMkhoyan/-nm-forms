@@ -1,30 +1,47 @@
+import { getFormGroupValue } from "../helpers/getFormGroupValue";
+import { ɵFormGroupValue, ɵTypedOrUntyped } from "../interfaces/form-group.interface";
 import { FormBaseNode } from "./FormBaseNode";
 
-interface NmFormGroup<FControl extends { [K in keyof FControl]: FormBaseNode<any> }> extends FormBaseNode<FControl> {
+interface NmFormGroup<FControl extends { [K in keyof FControl]: FormBaseNode<any, any> } = any>
+  extends FormBaseNode<ɵTypedOrUntyped<FControl, ɵFormGroupValue<FControl>, any>> {
   controls: FControl | null;
-  parentFormGroupName: string | null;
+  parentFormGroup: NmFormGroup<FControl> | null;
+  updateGroupValue: () => NmFormGroup<FControl>;
 }
 
-class NmFormGroupClass<FControl extends { [K in keyof FControl]: FormBaseNode<any> }>
-  extends FormBaseNode<FControl>
+interface INmFormGroupCreator {
+  new <FControl extends { [K in keyof FControl]: FormBaseNode<any> } = any>(
+    groupName: string,
+    controls: FControl
+  ): NmFormGroup<FControl>;
+}
+
+class NmFormGroupClass<FControl extends { [K in keyof FControl]: FormBaseNode<any, any> } = any>
+  extends FormBaseNode<ɵTypedOrUntyped<FControl, ɵFormGroupValue<FControl>, any>>
   implements NmFormGroup<FControl>
 {
   controls: FControl | null = null;
 
   constructor(groupName: string, controls: FControl) {
-    super(groupName, controls, { groupModeActive: true });
+    super(groupName);
+    this.controls = controls;
+    this.updateGroupValue();
     this.createFormGroupChildNodes(controls);
   }
 
   private createFormGroupChildNodes(controls: FControl): void {
     for (const controlName in controls) {
       if (Object.prototype.hasOwnProperty.call(controls, controlName)) {
-        controls[controlName].setParentFormGroup(this.controlName);
+        controls[controlName].setParentFormGroup(this);
       }
     }
     this.controls = controls;
   }
 
+  public updateGroupValue(): this {
+    this.setValue(getFormGroupValue(this.controls, { groupModeActive: true }));
+    return this;
+  }
 
   // get Control
   // markAllAsTouched(): void
@@ -37,13 +54,6 @@ class NmFormGroupClass<FControl extends { [K in keyof FControl]: FormBaseNode<an
   // reset(): this {
 }
 
-interface NmFormGroupCreator {
-  new <FControl extends { [K in keyof FControl]: FormBaseNode<any> } = any>(
-    groupName: string,
-    controls: FControl
-  ): NmFormGroupClass<FControl>;
-}
+const NmFormGroup: INmFormGroupCreator = NmFormGroupClass;
 
-const NmFormGroup: NmFormGroupCreator = NmFormGroupClass;
-
-export { NmFormGroup };
+export default NmFormGroup;

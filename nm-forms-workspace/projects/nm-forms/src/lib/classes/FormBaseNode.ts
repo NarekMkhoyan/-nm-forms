@@ -4,16 +4,14 @@
 // updateValueAndValidity(opts: { onlySelf?: boolean; emitEvent?: boolean; } = {}): void
 
 import { FORM_CONTROL_DEFAULT_OPTIONS } from "../constants/FormControlOptions.constant";
-import { INmFormControlOptions } from "../interfaces/FormControlOptions.interface";
-import { INmFormBaseNode } from "../interfaces/FormBaseNode.interface";
+import { INmFormControlOptions } from "../interfaces/form-control-options.interface";
+import { INmFormBaseNode } from "../interfaces/form-base-node.interface";
 import { DOMWorker } from "./DOMWorker";
+import NmFormGroup from "./FormGroup";
 
-class FormBaseNode<T> implements INmFormBaseNode<T> {
-  value: T | null;
-  initialValue: T;
+class FormBaseNode<T = any, TRawValue extends T = T> implements INmFormBaseNode<T> {
   controlName: string;
-  parentFormGroupName: string | null = null;
-  options: INmFormControlOptions;
+  parentFormGroup: NmFormGroup | null = null;
   valid: boolean | undefined = undefined;
   invalid: boolean | undefined = undefined;
   disabled: boolean = false;
@@ -22,13 +20,19 @@ class FormBaseNode<T> implements INmFormBaseNode<T> {
   dirty: boolean = false;
   touched: boolean = false;
   untouched: boolean = true;
+  options: INmFormControlOptions;
+  private _value?: T;
+  private _initialValue?: T;
+  private _domWorker?: DOMWorker<T> | null = null;
 
-  constructor(controlName: string, initialValue: T, options: INmFormControlOptions = FORM_CONTROL_DEFAULT_OPTIONS) {
+  get value(): T | undefined {
+    return this._value;
+  }
+
+  constructor(controlName: string, options: INmFormControlOptions = FORM_CONTROL_DEFAULT_OPTIONS) {
     this.controlName = controlName;
-    this.value = initialValue;
-    this.initialValue = initialValue;
     this.options = options;
-    const domWorker = new DOMWorker(this, options);
+    this._domWorker = new DOMWorker<T>(this, options);
   }
 
   //   addValidatorFn(validatorFn: () => boolean): this {
@@ -36,8 +40,8 @@ class FormBaseNode<T> implements INmFormBaseNode<T> {
   //     return this;
   //   }
 
-  setParentFormGroup(parentGroupName: string): this {
-    this.parentFormGroupName = parentGroupName;
+  setParentFormGroup(parentGroup: NmFormGroup): this {
+    this.parentFormGroup = parentGroup;
     return this;
   }
 
@@ -81,16 +85,16 @@ class FormBaseNode<T> implements INmFormBaseNode<T> {
     return this;
   }
 
-  reset(): this {
-    //! After reset you need to reset the CSS too
-    if (this.options.nonNullable) {
-      this.value = this.initialValue;
-    } else {
-      this.value = null;
-    }
+  // reset(): this {
+  //   //! After reset you need to reset the CSS too
+  //   if (this.options.nonNullable) {
+  //     this.value = this.initialValue;
+  //   } else {
+  //     this.value = null;
+  //   }
 
-    return this;
-  }
+  //   return this;
+  // }
 
   patchValue(): this {
     // TODO:
@@ -100,10 +104,18 @@ class FormBaseNode<T> implements INmFormBaseNode<T> {
 
   setValue(newValue: T): this {
     // TODO:
-    this.value = newValue;
-    //? if control has parent, update the value for the parent
+    this._value = newValue;
+    if (this.parentFormGroup) {
+      this.parentFormGroup.updateGroupValue();
+    }
     return this;
   }
+
+  protected setInitialValue?: (value: T) => this = (value: T) => {
+    this._initialValue = value;
+    this._value = value;
+    return this;
+  };
 }
 
 export { FormBaseNode };

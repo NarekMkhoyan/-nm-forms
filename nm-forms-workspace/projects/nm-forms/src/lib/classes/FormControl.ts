@@ -1,23 +1,24 @@
 import { FORM_CONTROL_DEFAULT_OPTIONS } from "../constants/FormControlOptions.constant";
-import { INmFormBaseNode } from "../interfaces/FormBaseNode.interface";
-import { INmFormControlOptions } from "../interfaces/FormControlOptions.interface";
+import { INmFormBaseNode } from "../interfaces/form-base-node.interface";
+import { INmFormControlOptions } from "../interfaces/form-control-options.interface";
 import { FormBaseNode } from "./FormBaseNode";
+import NmFormGroup from "./FormGroup";
 
 interface NmFormControl<T> extends INmFormBaseNode<T> {
-  parentFormGroupName: string | null;
+  parentFormGroup: NmFormGroup | null;
+}
+interface INmFormControlCreator {
+  new <T>(controlName: string, initialValue: T, options?: INmFormControlOptions): NmFormControl<T>;
 }
 
 class NmFormControlClass<T> extends FormBaseNode<T> implements NmFormControl<T> {
   constructor(controlName: string, initialValue: T, options: INmFormControlOptions = FORM_CONTROL_DEFAULT_OPTIONS) {
-    super(controlName, initialValue, options);
+    super(controlName, options);
+    this.setInitialValue && this.setInitialValue(initialValue);
     // TODO: nonNullable in group interface; try creating a mediator for creation nullable or non-nullable controls
   }
 }
 
-interface NmFormControlCreator {
-  new <T>(controlName: string, initialValue: T, options?: INmFormControlOptions): NmFormControlClass<T>;
-}
+const NmFormControl: INmFormControlCreator = NmFormControlClass;
 
-const NmFormControl: NmFormControlCreator = NmFormControlClass;
-
-export { NmFormControl };
+export default NmFormControl;

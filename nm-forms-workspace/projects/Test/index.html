@@ -3,33 +3,139 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>All Input Types</title>
   </head>
   <body>
-    <form data-nmFormGroup="user">
-      <div class="control">
-        <label for="name">Name</label>
-        <input type="text" name="name" id="name" data-nmFormControl="username" />
-      </div>
-      <div class="control">
-        <label for="email">Email</label>
-        <input type="email" name="email" id="email" data-nmFormControl="email" />
-      </div>
-      <div class="control">
-        <label for="age">Age</label>
-        <input type="number" name="age" value="18" id="age" min="18" data-nmFormControl="age" />
-      </div>
-      <div class="control">
-        <label for="agree">Agreement</label>
-        <input type="checkbox" name="agree" id="agree" min="18" data-nmFormControl="agree" />
-      </div>
-    </form>
-    <div class="control">
-      <label for="address">Address</label>
-      <input type="text" data-nmFormControl="address" />
-    </div>
+    <form data-nmFormGroup="allTypes">
+      <!-- Text input -->
+      <label for="text_input">Text Input:</label>
+      <input type="text" id="text_input" name="text_input" data-nmFormControl="text" />
 
-    <button id="test_btn">Print</button>
+      <br />
+
+      <!-- Password input -->
+      <label for="password_input">Password Input:</label>
+      <input type="password" id="password_input" name="password_input" data-nmFormControl="password" />
+
+      <br />
+
+      <!-- Textarea -->
+      <label for="textarea_input">Textarea:</label>
+      <textarea id="textarea_input" name="textarea_input" rows="4" cols="50" data-nmFormControl="textarea"></textarea>
+
+      <br />
+
+      <!-- Radio buttons -->
+      <label>Radio Buttons:</label><br />
+      <input type="radio" id="radio_option1" name="radio_options" value="option1" data-nmFormControl="radio" />
+      <label for="radio_option1">Option 1</label><br />
+      <input type="radio" id="radio_option2" name="radio_options" value="option2" data-nmFormControl="radio" />
+      <label for="radio_option2">Option 2</label><br />
+
+      <br />
+
+      <!-- Checkbox -->
+      <label for="checkbox_input">Checkbox:</label>
+      <input
+        type="checkbox"
+        id="checkbox_input"
+        name="checkbox_input"
+        value="checkbox_value"
+        data-nmFormControl="checkbox"
+      />
+
+      <br />
+
+      <!-- Number -->
+      <label for="number_input">Number Input:</label>
+      <input type="number" id="number_input" name="number_input" data-nmFormControl="number" />
+
+      <br />
+
+      <!-- Email -->
+      <label for="email_input">Email Input:</label>
+      <input type="email" id="email_input" name="email_input" data-nmFormControl="email" />
+
+      <br />
+
+      <!-- URL -->
+      <label for="url_input">URL Input:</label>
+      <input type="url" id="url_input" name="url_input" data-nmFormControl="url" />
+
+      <br />
+
+      <!-- Date -->
+      <label for="date_input">Date Input:</label>
+      <input type="date" id="date_input" name="date_input" data-nmFormControl="date" />
+
+      <br />
+
+      <!-- Time -->
+      <label for="time_input">Time Input:</label>
+      <input type="time" id="time_input" name="time_input" data-nmFormControl="time" />
+
+      <br />
+
+      <!-- Datetime-local -->
+      <label for="datetime_input">Datetime-local Input:</label>
+      <input type="datetime-local" id="datetime_input" name="datetime_input" data-nmFormControl="dateTime" />
+
+      <br />
+
+      <!-- Month -->
+      <label for="month_input">Month Input:</label>
+      <input type="month" id="month_input" name="month_input" data-nmFormControl="month" />
+
+      <br />
+
+      <!-- Week -->
+      <label for="week_input">Week Input:</label>
+      <input type="week" id="week_input" name="week_input" data-nmFormControl="week" />
+
+      <br />
+
+      <!-- Color -->
+      <label for="color_input">Color Input:</label>
+      <input type="color" id="color_input" name="color_input" data-nmFormControl="color" />
+
+      <br />
+
+      <!-- File -->
+      <label for="file_input">File Input:</label>
+      <input type="file" id="file_input" name="file_input" data-nmFormControl="file" />
+
+      <br />
+
+      <!-- Search -->
+      <label for="search_input">Search Input:</label>
+      <input type="search" id="search_input" name="search_input" data-nmFormControl="search" />
+
+      <br />
+
+      <!-- Tel -->
+      <label for="tel_input">Telephone Input:</label>
+      <input type="tel" id="tel_input" name="tel_input" data-nmFormControl="tel" />
+
+      <br />
+
+      <!-- Range -->
+      <label for="range_input">Range Input:</label>
+      <input type="range" id="range_input" name="range_input" min="0" max="100" data-nmFormControl="range" />
+
+      <!-- select -->
+      <label for="select_fruit">Select a fruit:</label>
+      <select id="select_fruit" name="select_fruit" data-nmFormControl="select">
+        <option value="apple">Apple</option>
+        <option value="banana">Banana</option>
+        <option value="orange">Orange</option>
+        <option value="strawberry">Strawberry</option>
+        <option value="grape">Grape</option>
+      </select>
+
+      <br />
+    </form>
+
+    <button id="test_btn">Test</button>
     <script src="./script.js" type="module"></script>
   </body>
 </html>

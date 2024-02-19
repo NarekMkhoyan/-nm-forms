@@ -1,4 +1,4 @@
-export const FormControlCSSClassTypes = [
+export const FormControlCSSClasses = [
   "valid",
   "invalid",
   "disabled",

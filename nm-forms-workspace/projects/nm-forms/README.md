@@ -1,10 +1,12 @@
 ## TODO:
-1. group - initialValue and value
 2. group - set/patch/reset value
-3. Validators
 4. group - control getter
-5. control value update reflect in group
-6. case - DOM element is added, get deleted, gets restored | check connection to the DOMWorker
-7. nonNullable
 8. controls inside formGroup must be within a formGroup inside the tamplate
-9. React appropriately to differen types of inputs
+
+7. nonNullable
+3. Validators
+6. case - DOM element is added, gets deleted, gets restored | check connection to the DOMWorker
+1. make value assignment to dom element a public feature, so the users can trigger reverse binding after manually changing group/control value 
+
+## Stopped at...
++ the case where I have a single control, not in a group

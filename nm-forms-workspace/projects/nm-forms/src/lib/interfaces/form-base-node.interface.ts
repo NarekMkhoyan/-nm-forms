@@ -1,8 +1,8 @@
-import { INmFormControlOptions } from "./FormControlOptions.interface";
+import NmFormGroup from "../classes/FormGroup";
+import { INmFormControlOptions } from "./form-control-options.interface";
 
 export interface INmFormBaseNode<T> {
-  value: T | null;
-  initialValue: T;
+  value: T | undefined;
   valid: boolean | undefined;
   invalid: boolean | undefined;
   disabled: boolean;
@@ -12,7 +12,7 @@ export interface INmFormBaseNode<T> {
   touched: boolean;
   untouched: boolean;
   controlName: string;
-  parentFormGroupName: string | null;
+  parentFormGroup: NmFormGroup | null;
   options: INmFormControlOptions;
   markAsTouched(): INmFormBaseNode<T>;
   markAsUntouched(): INmFormBaseNode<T>;
@@ -20,8 +20,8 @@ export interface INmFormBaseNode<T> {
   markAsPristine(): INmFormBaseNode<T>;
   disable(disableValidator: boolean): INmFormBaseNode<T>;
   enable(): INmFormBaseNode<T>;
-  reset(): INmFormBaseNode<T>;
+  // reset(): INmFormBaseNode<T>;
   patchValue(): INmFormBaseNode<T>;
   setValue(newValue: T): INmFormBaseNode<T>;
-  setParentFormGroup: (parentGroupName: string) => INmFormBaseNode<T>;
+  setParentFormGroup: (parentGroup: NmFormGroup) => INmFormBaseNode<T>;
 }

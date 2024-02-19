@@ -3,5 +3,4 @@ export interface INmFormControlOptions {
   groupModeActive?: boolean;
   disable?: boolean;
   validators?: any;
-
 }
