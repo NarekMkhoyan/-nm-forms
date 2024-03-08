@@ -20,4 +20,24 @@ export declare type ɵFormGroupValue<
   }
 >;
 
+export declare type ɵFormGroupRawValue<
+  T extends {
+    [K in keyof T]?: FormBaseNode<any>;
+  }
+> = ɵTypedOrUntyped<
+  T,
+  {
+    [K in keyof T]: ɵRawValue<T[K]>;
+  },
+  {
+    [key: string]: any;
+  }
+>;
+
+export declare type ɵRawValue<T extends FormBaseNode | undefined> = T extends FormBaseNode<any, any>
+  ? T["setValue"] extends (v: infer R) => void
+    ? R
+    : never
+  : never;
+
 export declare type ɵTypedOrUntyped<T, Typed, Untyped> = ɵIsAny<T, Untyped, Typed>;

@@ -1,6 +1,8 @@
 import { INmFormControlOptions } from "../interfaces/form-control-options.interface";
 import { FormControlCSSClasses } from "../constants/FormControlCSSClasees.constant";
 import { FormBaseNode } from "./FormBaseNode";
+import NmFormControl from "./FormControl";
+import NmFormGroup from "./FormGroup";
 
 class DOMWorker<T> {
   DOMElements: Element[] = [];
@@ -27,7 +29,7 @@ class DOMWorker<T> {
       if (!this.DOMElements.length) return;
       this.updateDOMElementValue();
       this.updateCSSClassList();
-      if (!this.options.groupModeActive) {
+      if (this.controlReference.nodeType === "form-control") {
         this.applyInputListener();
         this.applyFocusListener();
       }
@@ -67,7 +69,7 @@ class DOMWorker<T> {
       const eventListenerType: string = this.getEventListenerType(element);
       element.addEventListener(eventListenerType, ($event: Event) => {
         const newValue = this.getInputValueByType($event.target as HTMLInputElement);
-        this.controlReference.setValue(newValue);
+        (this.controlReference as NmFormGroup | NmFormControl).setValue(newValue);
         if (this.controlReference.pristine) {
           this.controlReference.markAsDirty();
           this.updateCSSClassList();
@@ -89,14 +91,22 @@ class DOMWorker<T> {
   }
 
   private findRelatedElements(): Element[] {
-    const queryString = `[data-${this.options.groupModeActive ? "nmFormGroup" : "nmFormControl"}="${
+    const queryString = `[data-${this.controlReference.nodeType === "form-group" ? "nmFormGroup" : "nmFormControl"}="${
       this.controlReference.controlName
     }"]`;
     const allInstances = document.querySelectorAll(queryString);
     const relatedElements: Element[] = [];
     allInstances.forEach((instance) => {
-      //! MISSING CASE: if the control doesn't have a parent group
-      if (instance.parentElement?.dataset["nmformgroup"] === this.controlReference.parentFormGroup?.controlName) {
+      const instanceParent = this.getElementParentWithDataAttribute(instance as HTMLElement);
+      if (this.controlReference.parentFormGroup) {
+        if (instanceParent?.dataset["nmformgroup"] === this.controlReference.parentFormGroup.controlName) {
+          relatedElements.push(instance);
+        } else {
+          throw new Error(
+            `FormControl named ${this.controlReference.controlName}, is declared within a FormGroup named ${this.controlReference.parentFormGroup.controlName}, but the input element tagged with data-nmFormControl=${this.controlReference.controlName} is not a child of an element tagged with data-nmFormGroup=${this.controlReference.parentFormGroup.controlName}`
+          );
+        }
+      } else {
         relatedElements.push(instance);
       }
     });
@@ -104,6 +114,7 @@ class DOMWorker<T> {
     return relatedElements;
   }
 
+  // TODO:
   //! Take out of the class
   private getEventListenerType(element: Element): string {
     switch ((element as HTMLInputElement).type) {
@@ -133,7 +144,7 @@ class DOMWorker<T> {
   }
 
   //! Take out of the class
-  private getInputValueByType(element: HTMLInputElement): T {
+  private getInputValueByType(element: HTMLInputElement): any {
     switch ((element as HTMLInputElement).type) {
       case "checkbox":
         return element.checked as T;
@@ -199,6 +210,22 @@ class DOMWorker<T> {
         element.value = this.controlReference.value as string;
         break;
     }
+  }
+
+  private getElementParentWithDataAttribute(element: HTMLElement): HTMLElement | null {
+    let parentEl = element.parentElement;
+    if (parentEl) {
+      const dataAttr = parentEl.dataset["nmformgroup"];
+      if (dataAttr) {
+        return parentEl;
+      } else {
+        parentEl = this.getElementParentWithDataAttribute(parentEl);
+      }
+    } else {
+      return null;
+    }
+
+    return parentEl;
   }
 }
 

@@ -1,12 +1,19 @@
 ## TODO:
-2. group - set/patch/reset value
-4. group - control getter
-8. controls inside formGroup must be within a formGroup inside the tamplate
 
-7. nonNullable
-3. Validators
-6. case - DOM element is added, gets deleted, gets restored | check connection to the DOMWorker
-1. make value assignment to dom element a public feature, so the users can trigger reverse binding after manually changing group/control value 
+1. group - set/patch/reset value
+
+2. Validators
+3. css classes
+
+4. nonNullable
+5. case - DOM element is added, gets deleted, gets restored | check connection to the DOMWorker
 
 ## Stopped at...
-+ the case where I have a single control, not in a group
+
+- need to create separate functions for groups and controls
+  1. ✔️ set - should aslo trigger validation checks, and dom class set
+  2. ✔️ patch - should aslo trigger validation checks, and dom class set
+  3. reset - should also reset the state (untouched, pristine....)
+  - all 3 must work on parent/child levels
+
+POSSIBLE BUG: I check to see if the control is a child of its parent formgroup in the DOM. But I can also have the case of TODO: 5, where the element hasn't been added to the DOM yet.

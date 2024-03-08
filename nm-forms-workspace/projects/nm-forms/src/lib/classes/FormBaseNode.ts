@@ -6,30 +6,69 @@
 import { FORM_CONTROL_DEFAULT_OPTIONS } from "../constants/FormControlOptions.constant";
 import { INmFormControlOptions } from "../interfaces/form-control-options.interface";
 import { INmFormBaseNode } from "../interfaces/form-base-node.interface";
+import { FormControlType } from "../interfaces/form-control.type";
 import { DOMWorker } from "./DOMWorker";
 import NmFormGroup from "./FormGroup";
 
 class FormBaseNode<T = any, TRawValue extends T = T> implements INmFormBaseNode<T> {
   controlName: string;
   parentFormGroup: NmFormGroup | null = null;
-  valid: boolean | undefined = undefined;
-  invalid: boolean | undefined = undefined;
-  disabled: boolean = false;
-  enabled: boolean = true;
-  pristine: boolean = true;
-  dirty: boolean = false;
-  touched: boolean = false;
-  untouched: boolean = true;
   options: INmFormControlOptions;
-  private _value?: T;
+  private _valid?: boolean | undefined = undefined;
+  private _invalid?: boolean | undefined = undefined;
+  private _disabled?: boolean = false;
+  private _enabled?: boolean = true;
+  private _pristine?: boolean = true;
+  private _dirty?: boolean = false;
+  private _touched?: boolean = false;
+  private _untouched?: boolean = true;
   private _initialValue?: T;
-  private _domWorker?: DOMWorker<T> | null = null;
+  protected _value?: T;
+  protected _domWorker?: DOMWorker<T> | null = null;
+  readonly nodeType: FormControlType;
 
   get value(): T | undefined {
     return this._value;
   }
 
-  constructor(controlName: string, options: INmFormControlOptions = FORM_CONTROL_DEFAULT_OPTIONS) {
+  get valid(): boolean | undefined {
+    return this._valid;
+  }
+
+  get invalid(): boolean | undefined {
+    return this._invalid;
+  }
+
+  get disabled(): boolean {
+    return this._disabled || false;
+  }
+
+  get enabled(): boolean {
+    return this._enabled || false;
+  }
+
+  get pristine(): boolean {
+    return this._pristine || false;
+  }
+
+  get dirty(): boolean {
+    return this._dirty || false;
+  }
+
+  get touched(): boolean {
+    return this._touched || false;
+  }
+
+  get untouched(): boolean {
+    return this._untouched || false;
+  }
+
+  constructor(
+    controlName: string,
+    nodeType: FormControlType,
+    options: INmFormControlOptions = FORM_CONTROL_DEFAULT_OPTIONS
+  ) {
+    this.nodeType = nodeType;
     this.controlName = controlName;
     this.options = options;
     this._domWorker = new DOMWorker<T>(this, options);
@@ -46,41 +85,41 @@ class FormBaseNode<T = any, TRawValue extends T = T> implements INmFormBaseNode<
   }
 
   markAsTouched(): this {
-    this.touched = true;
-    this.untouched = false;
+    this._touched = true;
+    this._untouched = false;
     return this;
   }
 
   markAsUntouched(): this {
-    this.touched = false;
-    this.untouched = true;
+    this._touched = false;
+    this._untouched = true;
     return this;
   }
 
   markAsDirty(): this {
-    this.dirty = true;
-    this.pristine = false;
+    this._dirty = true;
+    this._pristine = false;
     // TODO: check validity
     return this;
   }
 
   markAsPristine(): this {
-    this.dirty = false;
-    this.pristine = true;
+    this._dirty = false;
+    this._pristine = true;
     // TODO: check validity
     return this;
   }
 
   disable(disableValidator: boolean = false): this {
-    this.enabled = false;
-    this.disabled = true;
+    this._enabled = false;
+    this._disabled = true;
     // TODO: disable validator
     return this;
   }
 
   enable(): this {
-    this.enabled = true;
-    this.disabled = false;
+    this._enabled = true;
+    this._disabled = false;
     // TODO: enable the validator back
     return this;
   }
@@ -96,18 +135,7 @@ class FormBaseNode<T = any, TRawValue extends T = T> implements INmFormBaseNode<
   //   return this;
   // }
 
-  patchValue(): this {
-    // TODO:
-    //? if control has parent, update the value for the parent
-    return this;
-  }
-
-  setValue(newValue: T): this {
-    // TODO:
-    this._value = newValue;
-    if (this.parentFormGroup) {
-      this.parentFormGroup.updateGroupValue();
-    }
+  setValue(newValue: TRawValue, updateOnlySelf = false): this {
     return this;
   }
 

@@ -8,22 +8,34 @@
   <body>
     <form data-nmFormGroup="allTypes">
       <!-- Text input -->
-      <label for="text_input">Text Input:</label>
-      <input type="text" id="text_input" name="text_input" data-nmFormControl="text" />
+      <div data-nmFormGroup="test">
+        <div>
+          <div>
+            <label for="text_input">Text Input:</label>
+            <input type="text" id="text_input" name="text_input" data-nmFormControl="text" />
 
-      <br />
+            <br />
 
-      <!-- Password input -->
-      <label for="password_input">Password Input:</label>
-      <input type="password" id="password_input" name="password_input" data-nmFormControl="password" />
+            <!-- Password input -->
+            <label for="password_input">Password Input:</label>
+            <input type="password" id="password_input" name="password_input" data-nmFormControl="password" />
 
-      <br />
+            <br />
 
-      <!-- Textarea -->
-      <label for="textarea_input">Textarea:</label>
-      <textarea id="textarea_input" name="textarea_input" rows="4" cols="50" data-nmFormControl="textarea"></textarea>
+            <!-- Textarea -->
+            <label for="textarea_input">Textarea:</label>
+            <textarea
+              id="textarea_input"
+              name="textarea_input"
+              rows="4"
+              cols="50"
+              data-nmFormControl="textarea"
+            ></textarea>
 
-      <br />
+            <br />
+          </div>
+        </div>
+      </div>
 
       <!-- Radio buttons -->
       <label>Radio Buttons:</label><br />
@@ -135,7 +147,11 @@
       <br />
     </form>
 
-    <button id="test_btn">Test</button>
+    <input type="text" name="test" id="test" data-nmFormControl="single" />
+    <input type="text" name="test1" id="test1" data-nmFormControl="single" />
+
+    <button id="test_btn">Test 1</button>
+    <button id="test_btn_2">Test 2</button>
     <script src="./script.js" type="module"></script>
   </body>
 </html>

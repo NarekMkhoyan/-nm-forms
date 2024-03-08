@@ -1,25 +1,69 @@
 import { NmFormControl, NmFormGroup } from "../../dist/nm-forms/fesm2020/nm-forms.mjs";
 
 document.querySelector("#test_btn").addEventListener("click", () => {
-  console.log(allTypes);
+  // console.log(allTypes.value);
+  console.log(singleControl.value);
 });
 
-const test2 = new NmFormGroup("user", {
-  username: new NmFormControl("username", "132", { nonNullable: true }),
-  email: new NmFormControl("email", "", { nonNullable: false }),
-  age: new NmFormControl("age", 18),
-  //TODO! in the template the address field is not inside of the formGroup
-  address: new NmFormControl("address", "", { nonNullable: true }),
-  agree: new NmFormControl("agree", true),
-  more: new NmFormGroup("more", {
-    test: new NmFormControl("test", ""),
-  }),
+const singleControl = new NmFormControl("single", "");
+
+document.querySelector("#test_btn_2").addEventListener("click", () => {
+  // allTypes.setValue({
+  //   test: {
+  //     text: "NEW TEXT",
+  //     password: "NEW PASS",
+  //     textarea: "NEW LONGER TEXT",
+  //   },
+  //   radio: "option1",
+  //   checkbox: false,
+  //   number: 890,
+  //   email: "actual@MediaList.com",
+  //   url: "youtube.com",
+  //   date: new Date(),
+  //   time: new Date(),
+  //   dateTime: new Date(),
+  //   month: new Date(),
+  //   week: new Date(),
+  //   color: "#262626",
+  //   file: [],
+  //   search: "NEW search query",
+  //   tel: "+7",
+  //   range: 11,
+  //   select: "orange",
+  // });
+
+  allTypes.patchValue({
+    checkbox: false,
+    test: {
+      // text: "NEW TEXT",
+      password: "NEW PASS",
+      // textarea: "NEW LONGER TEXT",
+    },
+  });
+
+  console.log(allTypes.value);
+
+  // console.log(allTypes.get("test.password"));
 });
+
+// const test2 = new NmFormGroup("user", {
+//   username: new NmFormControl("username", "132", { nonNullable: true }),
+//   email: new NmFormControl("email", "", { nonNullable: false }),
+//   age: new NmFormControl("age", 18),
+//   //TODO! in the template the address field is not inside of the formGroup
+//   address: new NmFormControl("address", "", { nonNullable: true }),
+//   agree: new NmFormControl("agree", true),
+//   more: new NmFormGroup("more", {
+//     test: new NmFormControl("test", ""),
+//   }),
+// });
 
 const allTypes = new NmFormGroup("allTypes", {
-  text: new NmFormControl("text", "Text"), // value from input
-  password: new NmFormControl("password", "pass"), // value from input
-  textarea: new NmFormControl("textarea", "area"), // value from input
+  test: new NmFormGroup("test", {
+    text: new NmFormControl("text", "Text"), // value from input
+    password: new NmFormControl("password", "pass"), // value from input
+    textarea: new NmFormControl("textarea", "area"), // value from input
+  }),
   radio: new NmFormControl("radio", "option2"), // value from change
   checkbox: new NmFormControl("checkbox", true), // checked from change
   number: new NmFormControl("number", 123), // valueAsNumber from input
