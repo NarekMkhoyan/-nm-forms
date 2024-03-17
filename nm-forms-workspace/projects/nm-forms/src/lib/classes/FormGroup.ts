@@ -78,12 +78,21 @@ class NmFormGroupClass<FControl extends { [K in keyof FControl]: FormBaseNode<an
     return this;
   }
 
-  override setValue(newValue: ɵFormGroupRawValue<FControl>, updateOnlySelf = false): this {
+  override setValue(newValue: ɵFormGroupRawValue<FControl> | null, updateOnlySelf = false): this {
     // TODO:
     // check validation
     // apply dom classes
 
     this.setAndUpdateGroupValue(newValue, updateOnlySelf);
+    return this;
+  }
+
+  override reset(
+    resetOptions: { resetToInitialValue?: boolean; resetTo?: ɵFormGroupRawValue<FControl> } = {
+      resetToInitialValue: false,
+    }
+  ): this {
+    this.resetGroup(resetOptions);
     return this;
   }
 
@@ -96,7 +105,7 @@ class NmFormGroupClass<FControl extends { [K in keyof FControl]: FormBaseNode<an
     this.controls = controls;
   }
 
-  private setAndUpdateGroupValue(newValue: Partial<ɵFormGroupRawValue<FControl>>, updateOnlySelf = false): void {
+  private setAndUpdateGroupValue(newValue: Partial<ɵFormGroupRawValue<FControl> | null>, updateOnlySelf = false): void {
     if (!this.controls) return;
 
     for (const key in newValue) {
@@ -108,6 +117,31 @@ class NmFormGroupClass<FControl extends { [K in keyof FControl]: FormBaseNode<an
     this._value = getFormGroupValue(this.controls);
 
     if (this.parentFormGroup && !updateOnlySelf) {
+      this.parentFormGroup.updateGroupValue(true);
+    }
+  }
+
+  private resetGroup(resetOptions: { resetToInitialValue?: boolean; resetTo?: ɵFormGroupRawValue<FControl> }): void {
+    if (!this.controls) return;
+
+    for (const key in this.value) {
+      if (this.value.hasOwnProperty(key) && this.controls.hasOwnProperty(key)) {
+        let resetToValue = null;
+        if (resetOptions.resetTo) {
+          resetToValue = resetOptions.resetTo[key];
+        } else if (resetOptions.resetToInitialValue) {
+          resetToValue = this._initialValue as ɵFormGroupRawValue<FControl>;
+        }
+        ((this.controls as Record<string, unknown>)[key] as unknown as FormBaseNode).setValue(resetToValue, true);
+        if (((this.controls as Record<string, unknown>)[key] as unknown as NmFormGroupClass).controls) {
+          ((this.controls as Record<string, unknown>)[key] as unknown as NmFormGroupClass).resetGroup(resetOptions);
+        }
+      }
+    }
+
+    this._value = getFormGroupValue(this.controls);
+
+    if (this.parentFormGroup) {
       this.parentFormGroup.updateGroupValue(true);
     }
   }

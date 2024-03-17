@@ -22,7 +22,7 @@ export interface INmFormBaseNode<T> {
   markAsPristine(): INmFormBaseNode<T>;
   disable(disableValidator: boolean): INmFormBaseNode<T>;
   enable(): INmFormBaseNode<T>;
-  // reset(): INmFormBaseNode<T>;
+  reset(resetOptions?: { resetToInitialValue?: boolean; resetTo?: T }): INmFormBaseNode<T>;
   setValue(newValue: T): INmFormBaseNode<T>;
   setParentFormGroup: (parentGroup: NmFormGroup) => INmFormBaseNode<T>;
 }

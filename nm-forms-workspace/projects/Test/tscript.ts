@@ -31,9 +31,22 @@ test.setValue({
   },
 });
 
-test.patchValue({
-  username: "1",
+test.reset({
+  resetTo: {
+    username: "Narek",
+    email: "mySpace@mail.com",
+    age: 24,
+    address: "Address",
+    more: {
+      test: "test",
+      height: 183,
+    },
+  },
 });
 
-test.controls?.more.controls?.test.setValue("1");
-test.controls?.more.controls?.height.setValue(1);
+// test.patchValue({
+//   username: "1",
+// });
+
+// test.controls?.more.controls?.test.setValue("1");
+// test.controls?.more.controls?.height.setValue(1);

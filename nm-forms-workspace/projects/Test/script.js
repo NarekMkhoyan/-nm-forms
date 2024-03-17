@@ -2,46 +2,54 @@ import { NmFormControl, NmFormGroup } from "../../dist/nm-forms/fesm2020/nm-form
 
 document.querySelector("#test_btn").addEventListener("click", () => {
   // console.log(allTypes.value);
-  console.log(singleControl.value);
+  // console.log(singleControl.value);
+  allTypes.setValue({
+    test: {
+      text: "NEW TEXT",
+      password: "NEW PASS",
+      textarea: "NEW LONGER TEXT",
+    },
+    radio: "option1",
+    checkbox: false,
+    number: 890,
+    email: "actual@MediaList.com",
+    url: "youtube.com",
+    date: new Date(),
+    time: new Date(),
+    dateTime: new Date(),
+    month: new Date(),
+    week: new Date(),
+    color: "#262626",
+    file: [],
+    search: "NEW search query",
+    tel: "+7",
+    range: 11,
+    select: "orange",
+  });
 });
 
 const singleControl = new NmFormControl("single", "");
 
 document.querySelector("#test_btn_2").addEventListener("click", () => {
-  // allTypes.setValue({
-  //   test: {
-  //     text: "NEW TEXT",
-  //     password: "NEW PASS",
-  //     textarea: "NEW LONGER TEXT",
-  //   },
-  //   radio: "option1",
+  // allTypes.patchValue({
   //   checkbox: false,
-  //   number: 890,
-  //   email: "actual@MediaList.com",
-  //   url: "youtube.com",
-  //   date: new Date(),
-  //   time: new Date(),
-  //   dateTime: new Date(),
-  //   month: new Date(),
-  //   week: new Date(),
-  //   color: "#262626",
-  //   file: [],
-  //   search: "NEW search query",
-  //   tel: "+7",
-  //   range: 11,
-  //   select: "orange",
+  //   test: {
+  //     // text: "NEW TEXT",
+  //     password: "NEW PASS",
+  //     // textarea: "NEW LONGER TEXT",
+  //   },
   // });
 
-  allTypes.patchValue({
-    checkbox: false,
-    test: {
-      // text: "NEW TEXT",
+  allTypes.reset()
+  allTypes.get("test").reset({
+    resetTo: {
+      text: "NEW TEXT",
       password: "NEW PASS",
-      // textarea: "NEW LONGER TEXT",
+      textarea: "NEW LONGER TEXT",
     },
   });
 
-  console.log(allTypes.value);
+  console.log(allTypes);
 
   // console.log(allTypes.get("test.password"));
 });

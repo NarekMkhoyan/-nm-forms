@@ -30,6 +30,18 @@ class NmFormControlClass<T = any> extends FormBaseNode<T> implements NmFormContr
     }
     return this;
   }
+
+  override reset(resetOptions: { resetToInitialValue?: boolean; resetTo?: T } = { resetToInitialValue: false }): this {
+    let resetToValue = null;
+    if (resetOptions.resetTo) {
+      resetToValue = resetOptions.resetTo;
+      return this;
+    } else if (resetOptions.resetToInitialValue) {
+      resetToValue = this._initialValue as T;
+    }
+
+    return this.setValue(resetToValue as T);
+  }
 }
 
 const NmFormControl: INmFormControlCreator = NmFormControlClass;

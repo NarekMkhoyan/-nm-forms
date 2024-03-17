@@ -22,7 +22,7 @@ class FormBaseNode<T = any, TRawValue extends T = T> implements INmFormBaseNode<
   private _dirty?: boolean = false;
   private _touched?: boolean = false;
   private _untouched?: boolean = true;
-  private _initialValue?: T;
+  protected _initialValue?: T;
   protected _value?: T;
   protected _domWorker?: DOMWorker<T> | null = null;
   readonly nodeType: FormControlType;
@@ -124,16 +124,10 @@ class FormBaseNode<T = any, TRawValue extends T = T> implements INmFormBaseNode<
     return this;
   }
 
-  // reset(): this {
-  //   //! After reset you need to reset the CSS too
-  //   if (this.options.nonNullable) {
-  //     this.value = this.initialValue;
-  //   } else {
-  //     this.value = null;
-  //   }
-
-  //   return this;
-  // }
+  reset(resetOptions?: { resetToInitialValue?: boolean; resetTo?: TRawValue }): this {
+    //! After reset you need to reset the CSS too
+    return this;
+  }
 
   setValue(newValue: TRawValue, updateOnlySelf = false): this {
     return this;
