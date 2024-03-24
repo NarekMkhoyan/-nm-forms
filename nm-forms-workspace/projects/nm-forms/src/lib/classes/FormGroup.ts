@@ -38,8 +38,8 @@ class NmFormGroupClass<FControl extends { [K in keyof FControl]: FormBaseNode<an
   constructor(groupName: string, controls: FControl) {
     super(groupName, "form-group");
     this.controls = controls;
-    this.updateGroupValue();
     this.createFormGroupChildNodes(controls);
+    this.updateGroupValue();
   }
 
   public get(childName: string): FormBaseNode | undefined {
@@ -115,6 +115,7 @@ class NmFormGroupClass<FControl extends { [K in keyof FControl]: FormBaseNode<an
     }
 
     this._value = getFormGroupValue(this.controls);
+    this.checkValidity();
 
     if (this.parentFormGroup && !updateOnlySelf) {
       this.parentFormGroup.updateGroupValue(true);
@@ -140,9 +141,21 @@ class NmFormGroupClass<FControl extends { [K in keyof FControl]: FormBaseNode<an
     }
 
     this._value = getFormGroupValue(this.controls);
+    this.checkValidity();
 
     if (this.parentFormGroup) {
       this.parentFormGroup.updateGroupValue(true);
+    }
+  }
+
+  private checkValidity(): void {
+    if (this.controls) {
+      const valid = Object.keys(this.controls).every((key) => {
+        return this.controls && ((this.controls as any)[key] as FormBaseNode).valid;
+      });
+      this.setValidity(valid);
+    } else {
+      this.setValidity(true);
     }
   }
 }

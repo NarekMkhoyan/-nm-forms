@@ -9,7 +9,7 @@ class DOMWorker<T> {
   DOMObserver: MutationObserver | undefined = undefined;
   static allCSSClasses: string[];
 
-  constructor(private controlReference: FormBaseNode<T>, private options: INmFormControlOptions) {
+  constructor(private controlReference: FormBaseNode<T>) {
     this.createAllCSSClasses();
     this.connectToDOMElement();
   }

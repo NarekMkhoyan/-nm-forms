@@ -1,6 +1,5 @@
-import { FORM_CONTROL_DEFAULT_OPTIONS } from "../constants/FormControlOptions.constant";
-import { INmFormControlOptions } from "../interfaces/form-control-options.interface";
 import { INmFormBaseNode } from "../interfaces/form-base-node.interface";
+import { INmFormControlOptions } from "../interfaces/form-control-options.interface";
 import { FormBaseNode } from "./FormBaseNode";
 import NmFormGroup from "./FormGroup";
 
@@ -12,15 +11,15 @@ interface INmFormControlCreator {
 }
 
 class NmFormControlClass<T = any> extends FormBaseNode<T> implements NmFormControl<T> {
-  constructor(controlName: string, initialValue: T, options: INmFormControlOptions = FORM_CONTROL_DEFAULT_OPTIONS) {
-    super(controlName, "form-control", options);
+  constructor(controlName: string, initialValue: T, private readonly options?: INmFormControlOptions) {
+    super(controlName, "form-control");
     this.setInitialValue && this.setInitialValue(initialValue);
   }
 
   override setValue(newValue: T, updateOnlySelf = false): this {
     // TODO:
-    // check validation
     // apply dom classes
+    this.checkValidity(newValue);
 
     this._value = newValue;
     this._domWorker?.updateDOMElementValue();
@@ -41,6 +40,23 @@ class NmFormControlClass<T = any> extends FormBaseNode<T> implements NmFormContr
     }
 
     return this.setValue(resetToValue as T);
+  }
+
+  private checkValidity(newValue: T): void {
+    if (this.options) {
+      if (this.options.validators?.length) {
+        let isValid = false;
+        this.options.validators.forEach((validatorFn) => {
+          isValid = validatorFn(newValue, this.parentFormGroup);
+        });
+
+        this.setValidity(isValid);
+      } else {
+        this.setValidity(true);
+      }
+    } else {
+      this.setValidity(true);
+    }
   }
 }
 

@@ -1,32 +1,38 @@
-import { NmFormControl, NmFormGroup } from "../../dist/nm-forms/fesm2020/nm-forms.mjs";
+import { NmFormControl, NmFormGroup, NmValidators } from "../../dist/nm-forms/fesm2020/nm-forms.mjs";
 
 document.querySelector("#test_btn").addEventListener("click", () => {
   // console.log(allTypes.value);
   // console.log(singleControl.value);
-  allTypes.setValue({
-    test: {
-      text: "NEW TEXT",
-      password: "NEW PASS",
-      textarea: "NEW LONGER TEXT",
-    },
-    radio: "option1",
-    checkbox: false,
-    number: 890,
-    email: "actual@MediaList.com",
-    url: "youtube.com",
-    date: new Date(),
-    time: new Date(),
-    dateTime: new Date(),
-    month: new Date(),
-    week: new Date(),
-    color: "#262626",
-    file: [],
-    search: "NEW search query",
-    tel: "+7",
-    range: 11,
-    select: "orange",
-  });
+  // allTypes.setValue({
+  //   test: {
+  //     text: "NEW TEXT",
+  //     password: "NEW PASS",
+  //     textarea: "NEW LONGER TEXT",
+  //   },
+  //   radio: "option1",
+  //   checkbox: false,
+  //   number: 890,
+  //   email: "actual@MediaList.com",
+  //   url: "youtube.com",
+  //   date: new Date(),
+  //   time: new Date(),
+  //   dateTime: new Date(),
+  //   month: new Date(),
+  //   week: new Date(),
+  //   color: "#262626",
+  //   file: [],
+  //   search: "NEW search query",
+  //   tel: "+7",
+  //   range: 11,
+  //   select: "orange",
+  // });
+  console.log(allTypes);
 });
+
+function testFn(v, form) {
+  console.log(v, form, "testFn");
+  return v.includes('pass');
+}
 
 const singleControl = new NmFormControl("single", "");
 
@@ -40,7 +46,7 @@ document.querySelector("#test_btn_2").addEventListener("click", () => {
   //   },
   // });
 
-  allTypes.reset()
+  allTypes.reset();
   allTypes.get("test").reset({
     resetTo: {
       text: "NEW TEXT",
@@ -66,17 +72,18 @@ document.querySelector("#test_btn_2").addEventListener("click", () => {
 //   }),
 // });
 
+
 const allTypes = new NmFormGroup("allTypes", {
   test: new NmFormGroup("test", {
-    text: new NmFormControl("text", "Text"), // value from input
-    password: new NmFormControl("password", "pass"), // value from input
+    text: new NmFormControl("text", "Text", { validators: [NmValidators.required] }), // value from input
+    password: new NmFormControl("password", "pass", {validators: [NmValidators.customValidator(testFn)]}), // value from input
     textarea: new NmFormControl("textarea", "area"), // value from input
   }),
   radio: new NmFormControl("radio", "option2"), // value from change
-  checkbox: new NmFormControl("checkbox", true), // checked from change
-  number: new NmFormControl("number", 123), // valueAsNumber from input
-  email: new NmFormControl("email", "asd@asd.com"), // value from input
-  url: new NmFormControl("url", "url  "), // value from input
+  checkbox: new NmFormControl("checkbox", true, { validators: [NmValidators.required] }), // checked from change
+  number: new NmFormControl("number", 123, { validators: [NmValidators.required] }), // valueAsNumber from input
+  email: new NmFormControl("email", "asd@asd.com", { validators: [NmValidators.required] }), // value from input
+  url: new NmFormControl("url", "url", {validators: [NmValidators.pattern(/[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/)]}), // value from input
   date: new NmFormControl("date", new Date()), // valueAsDate from input
   time: new NmFormControl("time", new Date()), // valueAsDate from input
   dateTime: new NmFormControl("dateTime", new Date()), // valueAsDate from input

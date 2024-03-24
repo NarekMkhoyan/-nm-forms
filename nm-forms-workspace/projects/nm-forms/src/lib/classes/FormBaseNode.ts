@@ -3,8 +3,6 @@
 // clearValidators(): void
 // updateValueAndValidity(opts: { onlySelf?: boolean; emitEvent?: boolean; } = {}): void
 
-import { FORM_CONTROL_DEFAULT_OPTIONS } from "../constants/FormControlOptions.constant";
-import { INmFormControlOptions } from "../interfaces/form-control-options.interface";
 import { INmFormBaseNode } from "../interfaces/form-base-node.interface";
 import { FormControlType } from "../interfaces/form-control.type";
 import { DOMWorker } from "./DOMWorker";
@@ -13,7 +11,6 @@ import NmFormGroup from "./FormGroup";
 class FormBaseNode<T = any, TRawValue extends T = T> implements INmFormBaseNode<T> {
   controlName: string;
   parentFormGroup: NmFormGroup | null = null;
-  options: INmFormControlOptions;
   private _valid?: boolean | undefined = undefined;
   private _invalid?: boolean | undefined = undefined;
   private _disabled?: boolean = false;
@@ -63,21 +60,11 @@ class FormBaseNode<T = any, TRawValue extends T = T> implements INmFormBaseNode<
     return this._untouched || false;
   }
 
-  constructor(
-    controlName: string,
-    nodeType: FormControlType,
-    options: INmFormControlOptions = FORM_CONTROL_DEFAULT_OPTIONS
-  ) {
+  constructor(controlName: string, nodeType: FormControlType) {
     this.nodeType = nodeType;
     this.controlName = controlName;
-    this.options = options;
-    this._domWorker = new DOMWorker<T>(this, options);
+    this._domWorker = new DOMWorker<T>(this);
   }
-
-  //   addValidatorFn(validatorFn: () => boolean): this {
-  //     this.validatorFn = validatorFn;
-  //     return this;
-  //   }
 
   setParentFormGroup(parentGroup: NmFormGroup): this {
     this.parentFormGroup = parentGroup;
@@ -121,6 +108,12 @@ class FormBaseNode<T = any, TRawValue extends T = T> implements INmFormBaseNode<
     this._enabled = true;
     this._disabled = false;
     // TODO: enable the validator back
+    return this;
+  }
+
+  setValidity(isValid: boolean): this {
+    this._valid = isValid;
+    this._invalid = !isValid;
     return this;
   }
 
