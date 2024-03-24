@@ -18,10 +18,11 @@ export interface INmFormBaseNode<T> {
   markAsUntouched(): INmFormBaseNode<T>;
   markAsDirty(): INmFormBaseNode<T>;
   markAsPristine(): INmFormBaseNode<T>;
-  disable(disableValidator: boolean): INmFormBaseNode<T>;
+  disable(): INmFormBaseNode<T>;
   enable(): INmFormBaseNode<T>;
   setValidity(isValid: boolean): INmFormBaseNode<T>;
   reset(resetOptions?: { resetToInitialValue?: boolean; resetTo?: T }): INmFormBaseNode<T>;
   setValue(newValue: T): INmFormBaseNode<T>;
   setParentFormGroup: (parentGroup: NmFormGroup) => INmFormBaseNode<T>;
+  checkValidity: (value: T) => void;
 }

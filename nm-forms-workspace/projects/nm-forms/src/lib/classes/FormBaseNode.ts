@@ -1,7 +1,4 @@
 //?  valueChanges: Observable<TValue> - give the user an input through the options to pass a custom onChange method
-//! unknown
-// clearValidators(): void
-// updateValueAndValidity(opts: { onlySelf?: boolean; emitEvent?: boolean; } = {}): void
 
 import { INmFormBaseNode } from "../interfaces/form-base-node.interface";
 import { FormControlType } from "../interfaces/form-control.type";
@@ -86,28 +83,26 @@ class FormBaseNode<T = any, TRawValue extends T = T> implements INmFormBaseNode<
   markAsDirty(): this {
     this._dirty = true;
     this._pristine = false;
-    // TODO: check validity
     return this;
   }
 
   markAsPristine(): this {
     this._dirty = false;
     this._pristine = true;
-    // TODO: check validity
     return this;
   }
 
-  disable(disableValidator: boolean = false): this {
+  disable(): this {
     this._enabled = false;
     this._disabled = true;
-    // TODO: disable validator
+    this._domWorker?.disableFormControls();
     return this;
   }
 
   enable(): this {
     this._enabled = true;
     this._disabled = false;
-    // TODO: enable the validator back
+    this._domWorker?.enableFormControls();
     return this;
   }
 
@@ -118,12 +113,15 @@ class FormBaseNode<T = any, TRawValue extends T = T> implements INmFormBaseNode<
   }
 
   reset(resetOptions?: { resetToInitialValue?: boolean; resetTo?: TRawValue }): this {
-    //! After reset you need to reset the CSS too
     return this;
   }
 
   setValue(newValue: TRawValue, updateOnlySelf = false): this {
     return this;
+  }
+
+  checkValidity(value: T): void {
+    return;
   }
 
   protected setInitialValue?: (value: T) => this = (value: T) => {

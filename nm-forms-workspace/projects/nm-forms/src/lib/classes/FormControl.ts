@@ -17,8 +17,6 @@ class NmFormControlClass<T = any> extends FormBaseNode<T> implements NmFormContr
   }
 
   override setValue(newValue: T, updateOnlySelf = false): this {
-    // TODO:
-    // apply dom classes
     this.checkValidity(newValue);
 
     this._value = newValue;
@@ -42,7 +40,7 @@ class NmFormControlClass<T = any> extends FormBaseNode<T> implements NmFormContr
     return this.setValue(resetToValue as T);
   }
 
-  private checkValidity(newValue: T): void {
+  override checkValidity(newValue: T): void {
     if (this.options) {
       if (this.options.validators?.length) {
         let isValid = false;

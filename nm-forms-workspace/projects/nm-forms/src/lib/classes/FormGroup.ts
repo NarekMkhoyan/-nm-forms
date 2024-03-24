@@ -3,8 +3,6 @@ import { getFormGroupValue } from "../helpers/getFormGroupValue";
 import { FormBaseNode } from "./FormBaseNode";
 
 //! TODO:
-// markAllAsTouched(): void
-// getRawValue(): any
 // valueChanges: Observable<TValue>
 
 interface NmFormGroup<FControl extends { [K in keyof FControl]: FormBaseNode<any, any> } = any>
@@ -70,19 +68,11 @@ class NmFormGroupClass<FControl extends { [K in keyof FControl]: FormBaseNode<an
   }
 
   public patchValue(newValue: Partial<ɵTypedOrUntyped<FControl, ɵFormGroupRawValue<FControl>, any>>): this {
-    // TODO:
-    // check validation
-    // apply dom classes
-
     this.setAndUpdateGroupValue(newValue, false);
     return this;
   }
 
   override setValue(newValue: ɵFormGroupRawValue<FControl> | null, updateOnlySelf = false): this {
-    // TODO:
-    // check validation
-    // apply dom classes
-
     this.setAndUpdateGroupValue(newValue, updateOnlySelf);
     return this;
   }
@@ -148,7 +138,7 @@ class NmFormGroupClass<FControl extends { [K in keyof FControl]: FormBaseNode<an
     }
   }
 
-  private checkValidity(): void {
+  override checkValidity(): void {
     if (this.controls) {
       const valid = Object.keys(this.controls).every((key) => {
         return this.controls && ((this.controls as any)[key] as FormBaseNode).valid;

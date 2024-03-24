@@ -26,11 +26,12 @@ document.querySelector("#test_btn").addEventListener("click", () => {
   //   range: 11,
   //   select: "orange",
   // });
+  allTypes.get("test.text").disable()
+
   console.log(allTypes);
 });
 
 function testFn(v, form) {
-  console.log(v, form, "testFn");
   return v.includes('pass');
 }
 
@@ -47,15 +48,15 @@ document.querySelector("#test_btn_2").addEventListener("click", () => {
   // });
 
   allTypes.reset();
-  allTypes.get("test").reset({
-    resetTo: {
-      text: "NEW TEXT",
-      password: "NEW PASS",
-      textarea: "NEW LONGER TEXT",
-    },
-  });
+  // allTypes.get("test").reset({
+  //   resetTo: {
+  //     text: "NEW TEXT",
+  //     password: "NEW PASS",
+  //     textarea: "NEW LONGER TEXT",
+  //   },
+  // });
 
-  console.log(allTypes);
+  // console.log(allTypes);
 
   // console.log(allTypes.get("test.password"));
 });
@@ -75,9 +76,9 @@ document.querySelector("#test_btn_2").addEventListener("click", () => {
 
 const allTypes = new NmFormGroup("allTypes", {
   test: new NmFormGroup("test", {
-    text: new NmFormControl("text", "Text", { validators: [NmValidators.required] }), // value from input
-    password: new NmFormControl("password", "pass", {validators: [NmValidators.customValidator(testFn)]}), // value from input
-    textarea: new NmFormControl("textarea", "area"), // value from input
+    text: new NmFormControl("text", "", { validators: [NmValidators.required] }), // value from input
+    password: new NmFormControl("password", ""), // value from input
+    textarea: new NmFormControl("textarea", ""), // value from input
   }),
   radio: new NmFormControl("radio", "option2"), // value from change
   checkbox: new NmFormControl("checkbox", true, { validators: [NmValidators.required] }), // checked from change

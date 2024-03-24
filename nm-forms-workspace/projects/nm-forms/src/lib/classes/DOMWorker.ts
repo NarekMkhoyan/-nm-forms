@@ -14,6 +14,20 @@ class DOMWorker<T> {
     this.connectToDOMElement();
   }
 
+  public disableFormControls(): void {
+    this.DOMElements.forEach((element) => {
+      element.setAttribute("disabled", "true");
+      this.controlReference.setValidity(true);
+    });
+  }
+
+  public enableFormControls(): void {
+    this.DOMElements.forEach((element) => {
+      element.setAttribute("disabled", "false");
+      this.controlReference.checkValidity(this.controlReference.value as T);
+    });
+  }
+
   public updateDOMElementValue(): void {
     if (!this.DOMElements.length) {
       return;
@@ -23,25 +37,7 @@ class DOMWorker<T> {
     });
   }
 
-  private connectToDOMElement(): void {
-    this.DOMObserver = new MutationObserver(() => {
-      this.DOMElements = this.findRelatedElements();
-      if (!this.DOMElements.length) return;
-      this.updateDOMElementValue();
-      this.updateCSSClassList();
-      if (this.controlReference.nodeType === "form-control") {
-        this.applyInputListener();
-        this.applyFocusListener();
-      }
-      this.DOMObserver?.disconnect();
-    });
-
-    this.DOMObserver.observe(document, { childList: true, subtree: true });
-  }
-
-  //? Class handlers
-  //! might need to change to public, to use after validation checks
-  private updateCSSClassList(): void {
+  public updateCSSClassList(): void {
     if (!this.DOMElements.length) return;
     this.DOMElements.forEach((element) => {
       element.classList.remove(...DOMWorker.allCSSClasses);
@@ -53,6 +49,22 @@ class DOMWorker<T> {
     this.DOMElements.forEach((element) => {
       element.classList.add(...classes);
     });
+  }
+
+  private connectToDOMElement(): void {
+    this.DOMObserver = new MutationObserver(() => {
+      this.DOMElements = this.findRelatedElements();
+      if (!this.DOMElements.length) return;
+      this.updateDOMElementValue();
+      this.updateCSSClassList();
+      if (this.controlReference.nodeType === "form-control") {
+        this.applyInputListener();
+        this.applyBlurListener();
+      }
+      this.DOMObserver?.disconnect();
+    });
+
+    this.DOMObserver.observe(document, { childList: true, subtree: true });
   }
 
   private createAllCSSClasses(): void {
@@ -72,16 +84,16 @@ class DOMWorker<T> {
         (this.controlReference as NmFormGroup | NmFormControl).setValue(newValue);
         if (this.controlReference.pristine) {
           this.controlReference.markAsDirty();
-          this.updateCSSClassList();
         }
+        this.updateCSSClassList();
       });
     });
   }
 
-  private applyFocusListener(): void {
+  private applyBlurListener(): void {
     if (!this.DOMElements.length) return;
     this.DOMElements.forEach((element) => {
-      element.addEventListener("focus", () => {
+      element.addEventListener("blur", () => {
         if (this.controlReference.untouched) {
           this.controlReference.markAsTouched();
           this.updateCSSClassList();
