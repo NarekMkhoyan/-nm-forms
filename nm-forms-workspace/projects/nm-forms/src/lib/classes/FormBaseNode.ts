@@ -12,10 +12,10 @@ class FormBaseNode<T = any, TRawValue extends T = T> implements INmFormBaseNode<
   private _invalid?: boolean | undefined = undefined;
   private _disabled?: boolean = false;
   private _enabled?: boolean = true;
-  private _pristine?: boolean = true;
-  private _dirty?: boolean = false;
-  private _touched?: boolean = false;
-  private _untouched?: boolean = true;
+  protected _pristine?: boolean = true;
+  protected _dirty?: boolean = false;
+  protected _touched?: boolean = false;
+  protected _untouched?: boolean = true;
   protected _initialValue?: T;
   protected _value?: T;
   protected _domWorker?: DOMWorker<T> | null = null;
@@ -61,11 +61,6 @@ class FormBaseNode<T = any, TRawValue extends T = T> implements INmFormBaseNode<
     this.nodeType = nodeType;
     this.controlName = controlName;
     this._domWorker = new DOMWorker<T>(this);
-  }
-
-  setParentFormGroup(parentGroup: NmFormGroup): this {
-    this.parentFormGroup = parentGroup;
-    return this;
   }
 
   markAsTouched(): this {
@@ -124,11 +119,11 @@ class FormBaseNode<T = any, TRawValue extends T = T> implements INmFormBaseNode<
     return;
   }
 
-  protected setInitialValue?: (value: T) => this = (value: T) => {
+  protected setInitialValue?(value: T): this {
     this._initialValue = value;
     this._value = value;
     return this;
-  };
+  }
 }
 
 export { FormBaseNode };

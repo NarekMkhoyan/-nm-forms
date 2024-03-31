@@ -1,6 +1,9 @@
 import { ɵFormGroupRawValue, ɵFormGroupValue, ɵTypedOrUntyped } from "../interfaces/form-group.interface";
 import { getFormGroupValue } from "../helpers/getFormGroupValue";
 import { FormBaseNode } from "./FormBaseNode";
+import { checkFormGroupTouchedState } from "../helpers/checkFormGroupTouchedState";
+import { markAllAsTouched } from "../helpers/markAllAsTouched";
+import { checkFormGroupDirtyState } from "../helpers/checkFormGroupDirtyState";
 
 //! TODO:
 // valueChanges: Observable<TValue>
@@ -15,6 +18,7 @@ interface NmFormGroup<FControl extends { [K in keyof FControl]: FormBaseNode<any
   updateGroupValue: (updateOnlySelf: boolean) => NmFormGroup<FControl>;
   get(childName: string): FormBaseNode | undefined;
   patchValue(newValue: Partial<ɵTypedOrUntyped<FControl, ɵFormGroupRawValue<FControl>, any>>): NmFormGroup<FControl>;
+  markAllAsTouched(): NmFormGroup<FControl>;
 }
 
 interface INmFormGroupCreator {
@@ -72,6 +76,11 @@ class NmFormGroupClass<FControl extends { [K in keyof FControl]: FormBaseNode<an
     return this;
   }
 
+  public markAllAsTouched(): this {
+    Object.assign(this, markAllAsTouched(this));
+    return this;
+  }
+
   override setValue(newValue: ɵFormGroupRawValue<FControl> | null, updateOnlySelf = false): this {
     this.setAndUpdateGroupValue(newValue, updateOnlySelf);
     return this;
@@ -86,10 +95,59 @@ class NmFormGroupClass<FControl extends { [K in keyof FControl]: FormBaseNode<an
     return this;
   }
 
+  override checkValidity(): void {
+    if (this.controls) {
+      const valid = Object.keys(this.controls).every((key) => {
+        return this.controls && ((this.controls as any)[key] as FormBaseNode).valid;
+      });
+      this.setValidity(valid);
+    } else {
+      this.setValidity(true);
+    }
+  }
+
+  override markAsTouched(): this {
+    this._touched = true;
+    this._untouched = false;
+    this.parentFormGroup?.markAsTouched();
+    return this;
+  }
+
+  override markAsUntouched(): this {
+    this._touched = false;
+    this._untouched = true;
+    if (this.parentFormGroup) {
+      const isParentTouched = checkFormGroupTouchedState(this.parentFormGroup);
+      if (!isParentTouched) {
+        this.parentFormGroup.markAsUntouched();
+      }
+    }
+    return this;
+  }
+
+  override markAsDirty(): this {
+    this._dirty = true;
+    this._pristine = false;
+    this.parentFormGroup?.markAsDirty();
+    return this;
+  }
+
+  override markAsPristine(): this {
+    this._dirty = false;
+    this._pristine = true;
+    if (this.parentFormGroup) {
+      const isParentDirty = checkFormGroupDirtyState(this.parentFormGroup);
+      if (!isParentDirty) {
+        this.parentFormGroup.markAsPristine();
+      }
+    }
+    return this;
+  }
+
   private createFormGroupChildNodes(controls: FControl): void {
     for (const controlName in controls) {
       if (controls.hasOwnProperty(controlName)) {
-        controls[controlName].setParentFormGroup(this);
+        controls[controlName].parentFormGroup = this;
       }
     }
     this.controls = controls;
@@ -135,17 +193,6 @@ class NmFormGroupClass<FControl extends { [K in keyof FControl]: FormBaseNode<an
 
     if (this.parentFormGroup) {
       this.parentFormGroup.updateGroupValue(true);
-    }
-  }
-
-  override checkValidity(): void {
-    if (this.controls) {
-      const valid = Object.keys(this.controls).every((key) => {
-        return this.controls && ((this.controls as any)[key] as FormBaseNode).valid;
-      });
-      this.setValidity(valid);
-    } else {
-      this.setValidity(true);
     }
   }
 }

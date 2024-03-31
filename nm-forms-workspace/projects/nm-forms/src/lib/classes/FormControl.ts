@@ -41,20 +41,44 @@ class NmFormControlClass<T = any> extends FormBaseNode<T> implements NmFormContr
   }
 
   override checkValidity(newValue: T): void {
-    if (this.options) {
-      if (this.options.validators?.length) {
-        let isValid = false;
-        this.options.validators.forEach((validatorFn) => {
-          isValid = validatorFn(newValue, this.parentFormGroup);
-        });
+    if (this.options?.validators?.length) {
+      let isValid = false;
+      this.options.validators.forEach((validatorFn) => {
+        isValid = validatorFn(newValue, this.parentFormGroup);
+      });
 
-        this.setValidity(isValid);
-      } else {
-        this.setValidity(true);
-      }
+      this.setValidity(isValid);
     } else {
       this.setValidity(true);
     }
+  }
+
+  override markAsTouched(): this {
+    this._touched = true;
+    this._untouched = false;
+    this.parentFormGroup?.markAsTouched();
+    return this;
+  }
+
+  override markAsUntouched(): this {
+    this._touched = false;
+    this._untouched = true;
+    this.parentFormGroup?.markAsUntouched();
+    return this;
+  }
+
+  override markAsDirty(): this {
+    this._dirty = true;
+    this._pristine = false;
+    this.parentFormGroup?.markAsDirty();
+    return this;
+  }
+
+  override markAsPristine(): this {
+    this._dirty = false;
+    this._pristine = true;
+    this.parentFormGroup?.markAsPristine();
+    return this;
   }
 }
 

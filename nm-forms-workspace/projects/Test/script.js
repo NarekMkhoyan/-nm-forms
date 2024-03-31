@@ -26,8 +26,10 @@ document.querySelector("#test_btn").addEventListener("click", () => {
   //   range: 11,
   //   select: "orange",
   // });
-  allTypes.get("test.text").disable()
+  // allTypes.get("test.text").disable()
 
+  // console.log(allTypes);
+  allTypes.markAsDirty();
   console.log(allTypes);
 });
 
@@ -47,16 +49,16 @@ document.querySelector("#test_btn_2").addEventListener("click", () => {
   //   },
   // });
 
-  allTypes.reset();
-  // allTypes.get("test").reset({
-  //   resetTo: {
-  //     text: "NEW TEXT",
-  //     password: "NEW PASS",
-  //     textarea: "NEW LONGER TEXT",
-  //   },
-  // });
+  // allTypes.reset();
+  allTypes.get("test.text").markAsPristine();
+  allTypes.get("test.password").markAsPristine();
+  allTypes.get("test.textarea").markAsPristine();
+
 
   // console.log(allTypes);
+  // allTypes.markAsPristine();
+  console.log(allTypes);
+
 
   // console.log(allTypes.get("test.password"));
 });
