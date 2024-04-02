@@ -10,8 +10,8 @@ class FormBaseNode<T = any, TRawValue extends T = T> implements INmFormBaseNode<
   parentFormGroup: NmFormGroup | null = null;
   private _valid?: boolean | undefined = undefined;
   private _invalid?: boolean | undefined = undefined;
-  private _disabled?: boolean = false;
-  private _enabled?: boolean = true;
+  protected _disabled?: boolean = false;
+  protected _enabled?: boolean = true;
   protected _pristine?: boolean = true;
   protected _dirty?: boolean = false;
   protected _touched?: boolean = false;

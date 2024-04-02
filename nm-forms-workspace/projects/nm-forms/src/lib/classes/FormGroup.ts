@@ -19,6 +19,7 @@ interface NmFormGroup<FControl extends { [K in keyof FControl]: FormBaseNode<any
   get(childName: string): FormBaseNode | undefined;
   patchValue(newValue: Partial<ɵTypedOrUntyped<FControl, ɵFormGroupRawValue<FControl>, any>>): NmFormGroup<FControl>;
   markAllAsTouched(): NmFormGroup<FControl>;
+  getRawValue(): ɵFormGroupRawValue<FControl>;
 }
 
 interface INmFormGroupCreator {
@@ -67,7 +68,7 @@ class NmFormGroupClass<FControl extends { [K in keyof FControl]: FormBaseNode<an
   }
 
   public updateGroupValue(updateOnlySelf = false): this {
-    this.setValue(getFormGroupValue(this.controls), updateOnlySelf);
+    this.setValue(getFormGroupValue(this.controls, false), updateOnlySelf);
     return this;
   }
 
@@ -79,6 +80,10 @@ class NmFormGroupClass<FControl extends { [K in keyof FControl]: FormBaseNode<an
   public markAllAsTouched(): this {
     Object.assign(this, markAllAsTouched(this));
     return this;
+  }
+
+  public getRawValue(): ɵFormGroupRawValue<FControl> {
+    return getFormGroupValue(this.controls, true);
   }
 
   override setValue(newValue: ɵFormGroupRawValue<FControl> | null, updateOnlySelf = false): this {
@@ -97,9 +102,10 @@ class NmFormGroupClass<FControl extends { [K in keyof FControl]: FormBaseNode<an
 
   override checkValidity(): void {
     if (this.controls) {
-      const valid = Object.keys(this.controls).every((key) => {
-        return this.controls && ((this.controls as any)[key] as FormBaseNode).valid;
-      });
+      const valid = Object.keys(this.controls).every(
+        (key) =>
+          ((this.controls as any)[key] as FormBaseNode).valid || ((this.controls as any)[key] as FormBaseNode).disabled
+      );
       this.setValidity(valid);
     } else {
       this.setValidity(true);
@@ -144,6 +150,34 @@ class NmFormGroupClass<FControl extends { [K in keyof FControl]: FormBaseNode<an
     return this;
   }
 
+  override disable(): this {
+    this._enabled = false;
+    this._disabled = true;
+    this._domWorker?.disableFormControls();
+    if (this.controls) {
+      for (const key in this.controls) {
+        if (Object.prototype.hasOwnProperty.call(this.controls, key)) {
+          this.controls[key].disable();
+        }
+      }
+    }
+    return this;
+  }
+
+  override enable(): this {
+    this._enabled = true;
+    this._disabled = false;
+    this._domWorker?.enableFormControls();
+    if (this.controls) {
+      for (const key in this.controls) {
+        if (Object.prototype.hasOwnProperty.call(this.controls, key)) {
+          this.controls[key].enable();
+        }
+      }
+    }
+    return this;
+  }
+
   private createFormGroupChildNodes(controls: FControl): void {
     for (const controlName in controls) {
       if (controls.hasOwnProperty(controlName)) {
@@ -162,7 +196,7 @@ class NmFormGroupClass<FControl extends { [K in keyof FControl]: FormBaseNode<an
       }
     }
 
-    this._value = getFormGroupValue(this.controls);
+    this._value = getFormGroupValue(this.controls, false);
     this.checkValidity();
 
     if (this.parentFormGroup && !updateOnlySelf) {
@@ -188,7 +222,7 @@ class NmFormGroupClass<FControl extends { [K in keyof FControl]: FormBaseNode<an
       }
     }
 
-    this._value = getFormGroupValue(this.controls);
+    this._value = getFormGroupValue(this.controls, true);
     this.checkValidity();
 
     if (this.parentFormGroup) {

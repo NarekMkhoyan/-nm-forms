@@ -29,8 +29,8 @@ document.querySelector("#test_btn").addEventListener("click", () => {
   // allTypes.get("test.text").disable()
 
   // console.log(allTypes);
-  allTypes.markAsDirty();
-  console.log(allTypes);
+  // allTypes.markAsDirty();
+  console.log(allTypes.controls.test.valid);
 });
 
 function testFn(v, form) {
@@ -50,14 +50,15 @@ document.querySelector("#test_btn_2").addEventListener("click", () => {
   // });
 
   // allTypes.reset();
-  allTypes.get("test.text").markAsPristine();
-  allTypes.get("test.password").markAsPristine();
-  allTypes.get("test.textarea").markAsPristine();
+  allTypes.get("test.text").disable();
+  // allTypes.get("test.password").disable();
+  // allTypes.get("test.textarea").disable();
+
 
 
   // console.log(allTypes);
   // allTypes.markAsPristine();
-  console.log(allTypes);
+  // console.log(allTypes);
 
 
   // console.log(allTypes.get("test.password"));

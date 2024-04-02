@@ -17,14 +17,20 @@ class DOMWorker<T> {
   public disableFormControls(): void {
     this.DOMElements.forEach((element) => {
       element.setAttribute("disabled", "true");
-      this.controlReference.setValidity(true);
+      this.controlReference.checkValidity(this.controlReference.value as T);
+      if (this.controlReference.parentFormGroup) {
+        this.controlReference.parentFormGroup.checkValidity(null);
+      }
     });
   }
 
   public enableFormControls(): void {
     this.DOMElements.forEach((element) => {
-      element.setAttribute("disabled", "false");
+      element.removeAttribute("disabled");
       this.controlReference.checkValidity(this.controlReference.value as T);
+      if (this.controlReference.parentFormGroup) {
+        this.controlReference.parentFormGroup.checkValidity(null);
+      }
     });
   }
 
