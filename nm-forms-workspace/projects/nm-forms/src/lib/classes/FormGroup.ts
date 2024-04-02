@@ -110,6 +110,9 @@ class NmFormGroupClass<FControl extends { [K in keyof FControl]: FormBaseNode<an
     } else {
       this.setValidity(true);
     }
+    if (this.parentFormGroup) {
+      this.parentFormGroup.checkValidity(null);
+    }
   }
 
   override markAsTouched(): this {

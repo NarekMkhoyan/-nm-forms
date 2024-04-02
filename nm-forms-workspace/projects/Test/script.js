@@ -30,6 +30,7 @@ document.querySelector("#test_btn").addEventListener("click", () => {
 
   // console.log(allTypes);
   // allTypes.markAsDirty();
+  console.log(allTypes.valid);
   console.log(allTypes.controls.test.valid);
 });
 

@@ -51,6 +51,10 @@ class NmFormControlClass<T = any> extends FormBaseNode<T> implements NmFormContr
     } else {
       this.setValidity(true);
     }
+
+    if (this.parentFormGroup) {
+      this.parentFormGroup.checkValidity(null);
+    }
   }
 
   override markAsTouched(): this {
