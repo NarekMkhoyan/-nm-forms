@@ -1,25 +1,39 @@
 import { INmFormBaseNode } from "../interfaces/form-base-node.interface";
 import { INmFormControlOptions } from "../interfaces/form-control-options.interface";
 import { FormBaseNode } from "./FormBaseNode";
-import NmFormGroup from "./FormGroup";
 
 interface NmFormControl<T = any> extends INmFormBaseNode<T> {
-  parentFormGroup: NmFormGroup | null;
+  clearValidators: () => void;
+  setValidators: (validators: Function[]) => void;
 }
 interface INmFormControlCreator {
   new <T>(controlName: string, initialValue: T, options?: INmFormControlOptions): NmFormControl<T>;
 }
 
 class NmFormControlClass<T = any> extends FormBaseNode<T> implements NmFormControl<T> {
-  constructor(controlName: string, initialValue: T, private readonly options?: INmFormControlOptions) {
+  constructor(controlName: string, initialValue: T, private readonly options: INmFormControlOptions = {}) {
     super(controlName, "form-control");
     this.setInitialValue && this.setInitialValue(initialValue);
+  }
+
+  public clearValidators(): void {
+    if (this.options) {
+      this.options.validators = [];
+    }
+  }
+
+  public setValidators(validators: Function[]): void {
+    this.options.validators = validators;
+  }
+
+  override updateValueAndValidity(): void {
+    this.checkValidity(this.value as T);
   }
 
   override setValue(newValue: T, updateOnlySelf = false): this {
     this.checkValidity(newValue);
 
-    this._value = newValue;
+    this.value = newValue;
     this._domWorker?.updateDOMElementValue();
 
     if (this.parentFormGroup && !updateOnlySelf) {

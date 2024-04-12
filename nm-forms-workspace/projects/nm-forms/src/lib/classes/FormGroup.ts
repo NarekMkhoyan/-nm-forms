@@ -86,6 +86,16 @@ class NmFormGroupClass<FControl extends { [K in keyof FControl]: FormBaseNode<an
     return getFormGroupValue(this.controls, true);
   }
 
+  override updateValueAndValidity(): void {
+    if (this.controls) {
+      Object.keys(this.controls).forEach((key) => {
+        const control = (this.controls as any)[key] as FormBaseNode;
+        control.updateValueAndValidity();
+      });
+    }
+    this.checkValidity();
+  }
+
   override setValue(newValue: ɵFormGroupRawValue<FControl> | null, updateOnlySelf = false): this {
     this.setAndUpdateGroupValue(newValue, updateOnlySelf);
     return this;
@@ -199,7 +209,7 @@ class NmFormGroupClass<FControl extends { [K in keyof FControl]: FormBaseNode<an
       }
     }
 
-    this._value = getFormGroupValue(this.controls, false);
+    this.value = getFormGroupValue(this.controls, false);
     this.checkValidity();
 
     if (this.parentFormGroup && !updateOnlySelf) {
@@ -225,7 +235,7 @@ class NmFormGroupClass<FControl extends { [K in keyof FControl]: FormBaseNode<an
       }
     }
 
-    this._value = getFormGroupValue(this.controls, true);
+    this.value = getFormGroupValue(this.controls, true);
     this.checkValidity();
 
     if (this.parentFormGroup) {

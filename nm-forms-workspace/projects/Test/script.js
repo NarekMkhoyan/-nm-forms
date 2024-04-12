@@ -30,12 +30,17 @@ document.querySelector("#test_btn").addEventListener("click", () => {
 
   // console.log(allTypes);
   // allTypes.markAsDirty();
-  console.log(allTypes.valid);
-  console.log(allTypes.controls.test.valid);
+  allTypes.get("test.text").clearValidators();
+  allTypes.get("checkbox").clearValidators();
+  allTypes.get("number").clearValidators();
+  allTypes.get("email").clearValidators();
+  allTypes.get("url").clearValidators();
+  allTypes.updateValueAndValidity();
+  console.log(allTypes);
 });
 
 function testFn(v, form) {
-  return v.includes('pass');
+  return v.includes("pass");
 }
 
 const singleControl = new NmFormControl("single", "");
@@ -51,16 +56,17 @@ document.querySelector("#test_btn_2").addEventListener("click", () => {
   // });
 
   // allTypes.reset();
-  allTypes.get("test.text").disable();
+  allTypes.get("test.text").setValidators([NmValidators.required]);
+  allTypes.updateValueAndValidity();
+  console.log(allTypes);
+
+  // allTypes.get("test.text").disable();
   // allTypes.get("test.password").disable();
   // allTypes.get("test.textarea").disable();
-
-
 
   // console.log(allTypes);
   // allTypes.markAsPristine();
   // console.log(allTypes);
-
 
   // console.log(allTypes.get("test.password"));
 });
@@ -77,7 +83,6 @@ document.querySelector("#test_btn_2").addEventListener("click", () => {
 //   }),
 // });
 
-
 const allTypes = new NmFormGroup("allTypes", {
   test: new NmFormGroup("test", {
     text: new NmFormControl("text", "", { validators: [NmValidators.required] }), // value from input
@@ -88,7 +93,11 @@ const allTypes = new NmFormGroup("allTypes", {
   checkbox: new NmFormControl("checkbox", true, { validators: [NmValidators.required] }), // checked from change
   number: new NmFormControl("number", 123, { validators: [NmValidators.required] }), // valueAsNumber from input
   email: new NmFormControl("email", "asd@asd.com", { validators: [NmValidators.required] }), // value from input
-  url: new NmFormControl("url", "url", {validators: [NmValidators.pattern(/[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/)]}), // value from input
+  url: new NmFormControl("url", "url", {
+    validators: [
+      NmValidators.pattern(/[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/),
+    ],
+  }), // value from input
   date: new NmFormControl("date", new Date()), // valueAsDate from input
   time: new NmFormControl("time", new Date()), // valueAsDate from input
   dateTime: new NmFormControl("dateTime", new Date()), // valueAsDate from input

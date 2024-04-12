@@ -24,4 +24,6 @@ export interface INmFormBaseNode<T> {
   reset(resetOptions?: { resetToInitialValue?: boolean; resetTo?: T }): INmFormBaseNode<T>;
   setValue(newValue: T): INmFormBaseNode<T>;
   checkValidity: (value: T) => void;
+  updateValueAndValidity: () => void;
+  updateConnectionToDOM: () => void;
 }

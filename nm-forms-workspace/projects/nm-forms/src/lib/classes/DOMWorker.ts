@@ -1,4 +1,3 @@
-import { INmFormControlOptions } from "../interfaces/form-control-options.interface";
 import { FormControlCSSClasses } from "../constants/FormControlCSSClasees.constant";
 import { FormBaseNode } from "./FormBaseNode";
 import NmFormControl from "./FormControl";
@@ -57,7 +56,7 @@ class DOMWorker<T> {
     });
   }
 
-  private connectToDOMElement(): void {
+  public connectToDOMElement(): void {
     this.DOMObserver = new MutationObserver(() => {
       this.DOMElements = this.findRelatedElements();
       if (!this.DOMElements.length) return;
@@ -132,8 +131,6 @@ class DOMWorker<T> {
     return relatedElements;
   }
 
-  // TODO:
-  //! Take out of the class
   private getEventListenerType(element: Element): string {
     switch ((element as HTMLInputElement).type) {
       case "radio":
@@ -161,7 +158,6 @@ class DOMWorker<T> {
     }
   }
 
-  //! Take out of the class
   private getInputValueByType(element: HTMLInputElement): any {
     switch ((element as HTMLInputElement).type) {
       case "checkbox":

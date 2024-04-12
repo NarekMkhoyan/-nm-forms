@@ -25,6 +25,10 @@ class FormBaseNode<T = any, TRawValue extends T = T> implements INmFormBaseNode<
     return this._value;
   }
 
+  protected set value(newValue: T | undefined) {
+    this._value = newValue;
+  }
+
   get valid(): boolean | undefined {
     return this._valid;
   }
@@ -119,9 +123,17 @@ class FormBaseNode<T = any, TRawValue extends T = T> implements INmFormBaseNode<
     return;
   }
 
+  updateValueAndValidity(): void {
+    return;
+  }
+
+  updateConnectionToDOM(): void {
+    this._domWorker?.connectToDOMElement();
+  }
+
   protected setInitialValue?(value: T): this {
     this._initialValue = value;
-    this._value = value;
+    this.value = value;
     return this;
   }
 }
