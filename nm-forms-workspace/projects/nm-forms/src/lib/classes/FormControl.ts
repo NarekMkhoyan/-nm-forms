@@ -1,25 +1,39 @@
 import { INmFormBaseNode } from "../interfaces/form-base-node.interface";
 import { INmFormControlOptions } from "../interfaces/form-control-options.interface";
 import { FormBaseNode } from "./FormBaseNode";
-import NmFormGroup from "./FormGroup";
 
 interface NmFormControl<T = any> extends INmFormBaseNode<T> {
-  parentFormGroup: NmFormGroup | null;
+  clearValidators: () => void;
+  setValidators: (validators: Function[]) => void;
 }
 interface INmFormControlCreator {
   new <T>(controlName: string, initialValue: T, options?: INmFormControlOptions): NmFormControl<T>;
 }
 
 class NmFormControlClass<T = any> extends FormBaseNode<T> implements NmFormControl<T> {
-  constructor(controlName: string, initialValue: T, private readonly options?: INmFormControlOptions) {
+  constructor(controlName: string, initialValue: T, private readonly options: INmFormControlOptions = {}) {
     super(controlName, "form-control");
     this.setInitialValue && this.setInitialValue(initialValue);
+  }
+
+  public clearValidators(): void {
+    if (this.options) {
+      this.options.validators = [];
+    }
+  }
+
+  public setValidators(validators: Function[]): void {
+    this.options.validators = validators;
+  }
+
+  override updateValueAndValidity(): void {
+    this.checkValidity(this.value as T);
   }
 
   override setValue(newValue: T, updateOnlySelf = false): this {
     this.checkValidity(newValue);
 
-    this._value = newValue;
+    this.value = newValue;
     this._domWorker?.updateDOMElementValue();
 
     if (this.parentFormGroup && !updateOnlySelf) {
@@ -41,20 +55,48 @@ class NmFormControlClass<T = any> extends FormBaseNode<T> implements NmFormContr
   }
 
   override checkValidity(newValue: T): void {
-    if (this.options) {
-      if (this.options.validators?.length) {
-        let isValid = false;
-        this.options.validators.forEach((validatorFn) => {
-          isValid = validatorFn(newValue, this.parentFormGroup);
-        });
+    if (this.options?.validators?.length) {
+      let isValid = false;
+      this.options.validators.forEach((validatorFn) => {
+        isValid = validatorFn(newValue, this.parentFormGroup);
+      });
 
-        this.setValidity(isValid);
-      } else {
-        this.setValidity(true);
-      }
+      this.setValidity(isValid);
     } else {
       this.setValidity(true);
     }
+
+    if (this.parentFormGroup) {
+      this.parentFormGroup.checkValidity(null);
+    }
+  }
+
+  override markAsTouched(): this {
+    this._touched = true;
+    this._untouched = false;
+    this.parentFormGroup?.markAsTouched();
+    return this;
+  }
+
+  override markAsUntouched(): this {
+    this._touched = false;
+    this._untouched = true;
+    this.parentFormGroup?.markAsUntouched();
+    return this;
+  }
+
+  override markAsDirty(): this {
+    this._dirty = true;
+    this._pristine = false;
+    this.parentFormGroup?.markAsDirty();
+    return this;
+  }
+
+  override markAsPristine(): this {
+    this._dirty = false;
+    this._pristine = true;
+    this.parentFormGroup?.markAsPristine();
+    return this;
   }
 }
 
